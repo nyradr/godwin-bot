@@ -6,6 +6,7 @@ use discord::model::Event;
 mod config;
 /// Manage answers
 mod answer;
+mod parsing;
 
 fn main() {
     dotenv::dotenv();
@@ -22,7 +23,7 @@ fn main() {
             Ok(Event::MessageCreate(message)) => {
                 println!("{} says: {}", message.author.name, message.content);
 
-                if message.content.contains("nazi") {
+                if parsing::is_trigger(&message.content) {
                     answer::answer(&discord, message.channel_id);
                 }
             }
