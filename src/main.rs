@@ -1,11 +1,15 @@
 use discord::Discord;
-use std::env;
+use dotenv::dotenv;
 use discord::model::Event;
 
+/// Global bot configuration
+mod config;
+
 fn main() {
-    let discord = Discord::from_bot_token(
-        &env::var("DISCORD_TOKEN").expect("Expected token"),
-    ).expect("login failed");
+    dotenv::dotenv();
+    let config = config::Config::from_env();
+
+    let discord = Discord::from_bot_token(config.token()).expect("login failed");
 
     // Establish and use a websocket connection
     let (mut connection, _) = discord.connect().expect("connect failed");
