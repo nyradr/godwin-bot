@@ -4,6 +4,8 @@ use discord::model::Event;
 
 /// Global bot configuration
 mod config;
+/// Manage answers
+mod answer;
 
 fn main() {
     dotenv::dotenv();
@@ -21,17 +23,12 @@ fn main() {
                 println!("{} says: {}", message.author.name, message.content);
 
                 if message.content.contains("nazi") {
-                    let _ = discord.send_message(message.channel_id, "And it's a godwin point...", "", false);
-                }
-
-                if message.content == "!test" {
-                    let _ = discord.send_message(message.channel_id, "This is a reply to the test.", "", false);
-                } else if message.content == "!quit" {
-                    println!("Quitting.");
-                    break
+                    answer::answer(&discord, message.channel_id);
                 }
             }
-            Ok(_) => {}
+            Ok(event) => {
+                println!("{:?}", event);
+            }
             Err(discord::Error::Closed(code, body)) => {
                 println!("Gateway closed on us with code {:?}: {}", code, body);
                 break
